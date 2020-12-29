@@ -1,4 +1,6 @@
 .hello {
   color: red;
-  background: url('./icon.png');
+  /* font-weight: bold; */
+  font-weight: lighter;
+  /* background: url('./icon.png'); */
 }

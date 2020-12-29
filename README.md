@@ -229,4 +229,114 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
 };
- ```
+```
+
+## Using Source Maps
+
+Errors in bundled files only point to the bundle, not the individual files. Webpack uses source maps that map compiled code to the original source code.
+
+Include `devtool: 'inline-source-map'` under entry in the configuration file.
+
+When an error is encountered, the console displays an error occurring in the original source code file, not the bundle!
+
+---
+
+## Options to Automatically Compile Code
+
+1. Webpack watch mode
+2. webpack-dev-server
+3. webpack-dev-middleware
+
+### Watch Mode
+
+Include a script in the json file to watch for changes and compile code on save.
+
+`"watch": "webpack --watch",`
+
+We also tell the CleanWebpackPlugin to not remove index.html after each build when running `webpack --watch` using the `cleanStaleWebpackAssets` option.
+
+You still have to refresh the browser to see changes to the code.
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+ 
+module.exports = {
+  mode: 'development',
+  entry: {
+    index: './src/index.js',
+    print: './src/print.js',
+  },
+  devtool: 'inline-source-map',
+  plugins: [
+    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new HtmlWebpackPlugin({
+      title: 'Development',
+    }),
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+};
+```
+
+### webpack-dev-server
+
+Use the webpack-dev-server to provide live reloading.
+
+`npm install --save-dev webpack-dev-server`
+
+Or
+
+`npm i -D webpack-dev-server`
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+ 
+module.exports = {
+  mode: 'development',
+  entry: {
+    index: './src/index.js',
+    print: './src/print.js',
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+  },
+  plugins: [
+    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new HtmlWebpackPlugin({
+      title: 'Development',
+    }),
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+};
+```
+
+Add a script in the package.json file:  
+`"start": "webpack serve --open 'Firefox'",`
+
+### webpack-dev-middleware
+
+Use webpack-dev-middleware to emit processed files to a sever. It's often used with Express.
+
+`npm install --save-dev express webpack-dev-middleware`
+
+Or
+
+`npm i -D express webpack-dev-middleware`
+
+Include this npm script to start the server:  
+`"server": "node server.js"`
+
+You still have to refresh to see changes to your code.
+
+Use webpack-hot-middleware to enable hot reloading.
+
